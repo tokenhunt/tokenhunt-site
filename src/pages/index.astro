@@ -52,6 +52,16 @@ const tiers = [
     href: '#email',
   },
 ];
+const bench = {
+  tools: ['token-hunt 0.1.1', 'gitleaks 8.30.1', 'trufflehog 3.97.9'],
+  rows: [
+    { scenario: 'pasted secret in chat (10 keys)', th: '10/10', gl: '9/10', t3: '6/10' },
+    { scenario: 'bash escape-hatch (7 shapes)', th: '7/7', gl: '0/7', t3: '0/7' },
+    { scenario: '.claude/settings.local.json (5 keys)', th: '5/5', gl: '1/5', t3: '3/5' },
+    { scenario: '59 benign lines (false positives)', th: '14 — all low-confidence entropy; 0 at ≥ 0.5', gl: '0', t3: '0' },
+  ],
+};
+
 import Seo from "../components/Seo.astro";
 
 const appSchema = {
@@ -309,10 +319,58 @@ const orgSchema = {
 
       <!-- ============ providers ============ -->
       <section class="providers container">
-        <p class="providers-label">48 rules · {providers.length} providers built in</p>
+        <p class="providers-label">265 rules · {providers.length} providers built in</p>
         <ul>
           {[...providers].sort((a, b) => a.localeCompare(b)).map((p) => <li>{p}</li>)}
         </ul>
+      </section>
+
+      <!-- ============ measured ============ -->
+      <section class="measured container">
+        <h2><span class="sec-num">04</span> Measured, not marketed.</h2>
+        <p class="measured-lede">
+          Three chat-time vectors, synthetic fixtures, fake values only, one OS.
+          Commit-time scanners evaluate after the secret has already been sent to a model;
+          the numbers below are what that gap looks like in practice.
+        </p>
+        <div class="measured-grid">
+          <div>
+            <table>
+              <thead>
+                <tr><th>vector</th>{bench.tools.map((t) => <th>{t}</th>)}</tr>
+              </thead>
+              <tbody>
+                {bench.rows.map((r) => (
+                  <tr>
+                    <td>{r.scenario}</td>
+                    <td class="measured-th">{r.th}</td>
+                    <td class="dim">{r.gl}</td>
+                    <td class="dim">{r.t3}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="measured-note">
+              escape-hatch runs at the PreToolUse:Bash detection point; the other tools
+              return zero findings on the same file at any setting.
+            </p>
+          </div>
+          <div class="measured-cites">
+            <p class="measured-cite">
+              <span class="t-accent">3.2% vs 1.5%</span> — AI-assisted commits leak at twice
+              the baseline rate. <a href="https://www.gitguardian.com/state-of-secrets-sprawl-2026">GitGuardian, State of Secrets Sprawl 2026</a>
+            </p>
+            <p class="measured-cite">
+              <span class="t-accent">2,539 keys</span> — persisted into
+              <code>.claude/settings.local.json</code> across 1,994 repos that traditional
+              scanning missed. <a href="https://www.apiiro.com/research/report-the-real-security-risks-of-ai-coding-assistants/">Apiiro, Nov 2026</a>
+            </p>
+            <p class="measured-cite">
+              <span class="t-accent">+81% YoY</span> — 1.27M AI-service credentials leaked in 2025.
+              <a href="https://www.gitguardian.com/state-of-secrets-sprawl-2026">GitGuardian 2026</a>
+            </p>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -659,6 +717,37 @@ const orgSchema = {
       .providers ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.6rem 1.75rem; }
       .providers li { font-size: 0.85rem; font-weight: 500; }
       .providers li::before { content: '·'; color: var(--accent); margin-right: 0.5rem; }
+
+      /* ---- measured ---- */
+      .measured { padding-block: 3.5rem 6rem; border-top: 1px solid var(--border); }
+      .measured-lede { color: var(--muted); max-width: 68ch; margin-top: 1.5rem; }
+      .measured-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+        gap: 3rem;
+        margin-top: 2.5rem;
+        align-items: start;
+      }
+      .measured table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+      .measured th {
+        text-align: left;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 500;
+        font-size: 0.68rem;
+        padding: 0.6rem 0.75rem 0.6rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .measured td { padding: 0.7rem 0.75rem 0.7rem 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+      .measured-th { color: var(--accent); font-weight: 700; }
+      .measured-note { color: var(--muted); font-size: 0.75rem; margin-top: 1rem; max-width: 60ch; }
+      .measured-cites { display: grid; gap: 1.5rem; padding-top: 0.4rem; }
+      .measured-cite { font-size: 0.82rem; line-height: 1.65; color: var(--muted); }
+      .measured-cite a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+      @media (max-width: 900px) {
+        .measured-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      }
 
       /* ---- footer ---- */
       .footer {
