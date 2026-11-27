@@ -113,7 +113,7 @@ const crumbSchema = {
       <h1>token-hunt <span class="ver">v0.1.0</span></h1>
       <p class="sub">
         Python 3.10+ · zero cloud, zero telemetry · fail-closed ·
-        <a href="https://github.com/JordanNewell/token-hunt">source on GitHub</a>
+        <a href="https://github.com/tokenhunt/token-hunt">source on GitHub</a>
       </p>
 
       <nav class="toc" aria-label="contents">
@@ -130,7 +130,7 @@ const crumbSchema = {
         <h2><span class="sec-num">01</span> Install</h2>
         <div class="term" role="group" aria-label="install commands">
           <div class="row"><span class="prompt">$</span><code>pip install token-hunt</code><span class="hint"># standalone cli</span></div>
-          <div class="row"><span class="prompt">$</span><code>claude plugin install token-hunt@JordanNewell</code><span class="hint"># the six-hook guard</span></div>
+          <div class="row"><span class="prompt">$</span><code>claude plugin install token-hunt@tokenhunt</code><span class="hint"># the six-hook guard</span></div>
         </div>
         <p>
           The plugin is the only step most people need — it wires all six hooks into Claude Code.
@@ -280,11 +280,99 @@ const crumbSchema = {
         </p>
       </section>
 
+
+      <p>
+        Every finding carries its rule id. The full reference lives in the
+        collapsible table below &mdash; generated from <code>patterns/builtin.toml</code>, so it
+        can&rsquo;t drift from the shipped package.
+      </p>
+      <details class="rules-ref">
+        <summary>All 48 builtin rules</summary>
+        <table class="rules-table">
+          <thead><tr><th>rule id</th><th>what it matches</th><th>rotate url</th></tr></thead>
+          <tbody>
+| <code>zai-api-key</code> | Z.ai / Bigmodel API key (xxx.yyyy 49-char) | yes |
+| <code>anthropic-key</code> | Anthropic API key | yes |
+| <code>github-pat</code> | GitHub Personal Access Token (classic) | yes |
+| <code>github-fine-pat</code> | GitHub fine-grained PAT | yes |
+| <code>figma-pat</code> | Figma personal access token | yes |
+| <code>pypi-token</code> | PyPI API token | yes |
+| <code>linear-key</code> | Linear API key | yes |
+| <code>stripe-sk</code> | Stripe secret key | yes |
+| <code>openai-key</code> | OpenAI API key (legacy + project shapes, T3BlbkFJ marker) | yes |
+| <code>npm-token</code> | npm access token (auth token shape) | yes |
+| <code>slack-token</code> | Slack token (bot/user/app) | yes |
+| <code>gitlab-pat</code> | GitLab personal access token | yes |
+| <code>openrouter-key</code> | OpenRouter API key | yes |
+| <code>groq-key</code> | Groq API key | yes |
+| <code>together-key</code> | Together AI API key | yes |
+| <code>fireworks-key</code> | Fireworks AI API key | yes |
+| <code>xai-key</code> | xAI Grok API key | yes |
+| <code>perplexity-key</code> | Perplexity API key | yes |
+| <code>huggingface-key</code> | Hugging Face token (user + legacy org) | yes |
+| <code>cerebras-key</code> | Cerebras API key | yes |
+| <code>replicate-key</code> | Replicate API key | yes |
+| <code>vercel-gateway-key</code> | Vercel AI Gateway key (vck_ family) | yes |
+| <code>nvidia-nim-key</code> | NVIDIA NIM API key | yes |
+| <code>chutes-key</code> | Chutes AI API key | yes |
+| <code>requesty-key</code> | Requesty API key | yes |
+| <code>novita-key</code> | Novita AI API key (keyword-gated — bare sk_ shape) | yes |
+| <code>upstage-key</code> | Upstage Solar API key (keyword-gated — bare up_ shape) | yes |
+| <code>baseten-key</code> | Baseten API key | yes |
+| <code>qianfan-key</code> | Baidu Qianfan bearer key | yes |
+| <code>fal-key</code> | fal.ai key (key_id:key_secret) | yes |
+| <code>dashscope-key</code> | Alibaba DashScope workspace/coding-plan key | yes |
+| <code>moonshot-kimi-key</code> | Kimi for Coding managed key | yes |
+| <code>mistral-key</code> | Mistral API key (keyword-gated — no prefix) | yes |
+| <code>cohere-key</code> | Cohere API key (keyword-gated — no prefix) | yes |
+| <code>scaleway-key</code> | Scaleway API key (keyword-gated UUID) | yes |
+| <code>sambanova-key</code> | SambaNova API key (keyword-gated opaque) | yes |
+| <code>nebius-key</code> | Nebius Token Factory key (keyword-gated opaque) | yes |
+| <code>ai21-key</code> | AI21 API key (keyword-gated opaque) | yes |
+| <code>ovh-key</code> | OVHcloud AI Endpoints token (keyword-gated opaque) | yes |
+| <code>friendliai-key</code> | FriendliAI token (keyword-gated opaque) | yes |
+| <code>gmi-key</code> | GMI Cloud API key (keyword-gated opaque) | yes |
+| <code>crusoe-key</code> | Crusoe Cloud access key (keyword-gated opaque) | yes |
+| <code>featherless-key</code> | Featherless API key (keyword-gated opaque) | yes |
+| <code>deepinfra-key</code> | DeepInfra API key (keyword-gated opaque; scoped JWTs via generic-jwt) | yes |
+| <code>inference-net-key</code> | Inference.net API key (keyword-gated opaque) | yes |
+| <code>byteplus-key</code> | BytePlus ModelArk API key (keyword-gated opaque) | yes |
+| <code>generic-sk-key</code> | Unattributed sk- 32-char key (DeepSeek / StepFun / Moonshot / SiliconFlow / Poe / Qwen shape) | &mdash; |
+| <code>generic-jwt</code> | Generic JWT (MiniMax / DeepInfra scoped / Crusoe CLI bearer) | &mdash; |
+          </tbody>
+        </table>
+      </details>
+
+      <!-- ============ automation ============ -->
+      <h2><span class="sec-num">07</span> CI &amp; other agents</h2>
+      <h3>Exit codes</h3>
+      <p>
+        <code>scan</code> exits <code>0</code> on success &mdash; <em>including when leaks are
+        found</em> (only usage errors exit <code>2</code>). Gate pipelines on the JSON
+        count field, not the exit code:
+      </p>
+      <pre class="file"><code>token-hunt scan --stdin --format json &lt; transcript.txt | jq -e '.count == 0'</code></pre>
+      <h3>Cursor &amp; Aider (manual wiring)</h3>
+      <p>
+        The plugin format is Claude Code-specific, but the CLI covers any agent &mdash;
+        point <code>watch</code> at whatever directory your tool writes transcripts to,
+        and every file change is scanned live:
+      </p>
+      <pre class="file"><code># live tail of any agent's transcript dir (findings log for rotation)
+token-hunt watch ~/.cursor/ --context PostToolUse:Read
+
+# one-shot pipe scan of any text (findings print with rule + rotate URL)
+token-hunt scan --stdin --context UserPromptSubmit &lt; session.txt</code></pre>
+      <p>
+        First-class Cursor and Aider plugin integrations ship in v0.2 &mdash; the hook
+        protocols differ per tool, and we&rsquo;d rather ship them correct than soon.
+      </p>
+
       <p class="back">
         <a href="/">← tokenhunt.dev</a> ·
         <a href="/changelog">changelog</a> ·
         <a href="/license">license</a> ·
-        <a href="https://github.com/JordanNewell/token-hunt/issues">issues</a>
+        <a href="https://github.com/tokenhunt/token-hunt/issues">issues</a>
       </p>
     </main>
 
@@ -323,6 +411,13 @@ const crumbSchema = {
       }
       ::selection { background: var(--accent); color: var(--bg); }
       :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      details.rules-ref { margin: 1rem 0 0; border: 1px solid var(--border); border-radius: 8px; }
+      details.rules-ref summary { cursor: pointer; padding: .6rem 1rem; color: var(--muted); }
+      details.rules-ref[open] summary { border-bottom: 1px solid var(--border); }
+      .rules-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+      .rules-table th, .rules-table td { text-align: left; padding: .35rem .75rem; border-bottom: 1px solid var(--border); }
+      .rules-table th { color: var(--muted); font-weight: 500; }
+
       ::-webkit-scrollbar { width: 10px; }
       ::-webkit-scrollbar-track { background: var(--bg); }
       ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }

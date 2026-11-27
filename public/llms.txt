@@ -6,7 +6,7 @@ TokenHunt (PyPI: `token-hunt`, install: `pip install token-hunt`) runs as hooks 
 
 - License: BUSL-1.1 — free for personal and noncommercial use; MIT from the 2030 change date; commercial use by written agreement.
 - Author: Jordan Newell (https://jordannewell.com)
-- Repository: https://github.com/JordanNewell/token-hunt
+- Repository: https://github.com/tokenhunt/token-hunt
 - PyPI: https://pypi.org/project/token-hunt/
 - X: https://x.com/tokenhuntdev
 
